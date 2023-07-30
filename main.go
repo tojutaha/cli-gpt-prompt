@@ -38,7 +38,7 @@ func parseJSONResponse(jsonData string) (string, error) {
 
 func queryChatGPT(apiKey string, prompt string) string {
     url := "https://api.openai.com/v1/engines/text-davinci-003/completions"
-    payload := strings.NewReader(fmt.Sprintf(`{"prompt": "%s", "temperature": 0.5, "max_tokens": 300}`, prompt))
+    payload := strings.NewReader(fmt.Sprintf(`{"prompt": "%s", "temperature": 0.5, "max_tokens": 1000}`, prompt))
 
     req, _ := http.NewRequest("POST", url, payload)
     req.Header.Add("Content-Type", "application/json")
