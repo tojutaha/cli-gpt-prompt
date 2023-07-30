@@ -10,19 +10,6 @@ import (
     "encoding/json"
 )
 
-/* davinci engine
-type Choice struct {
-    Text         string `json:"text"`
-    Index           int `json:"index"`
-    Logprobs     string `json:"logprobs"`
-    FinishReason string `json:"finish_reason"`
-}
-
-type Response struct {
-    Choices []Choice `json:"choices"`
-}
-*/
-
 type Response struct {
     ID       string `json:"id"`
     Object   string `json:"object"`
@@ -52,7 +39,6 @@ func parseJSONResponse(jsonData string) (string, error) {
 
     // Assuming theres only one choice in the choices array
     if len(data.Choices) > 0 {
-        //return data.Choices[0].Text, nil
         return data.Choices[0].Message.Content, nil
     }
 
@@ -60,8 +46,6 @@ func parseJSONResponse(jsonData string) (string, error) {
 }
 
 func queryChatGPT(apiKey string, prompt string) string {
-    //url := "https://api.openai.com/v1/engines/text-davinci-003/completions"
-    //payload := strings.NewReader(fmt.Sprintf(`{"prompt": "%s", "temperature": 0.5, "max_tokens": 1000}`, prompt))
     url := "https://api.openai.com/v1/chat/completions"
     payload := strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": "%s"}], "temperature": 0.7}`, prompt))
     req, _ := http.NewRequest("POST", url, payload)
@@ -88,7 +72,7 @@ func main() {
         os.Exit(1)
     }
 
-    // TODO: Better way of handling this..
+    // TODO: Better way of handling this..?
     apiKey := os.Getenv("OPENAI_API_KEY")
     if apiKey == "" {
         fmt.Println("The environment variable is not set. Shutting down")
