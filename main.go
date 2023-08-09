@@ -68,7 +68,7 @@ func queryChatGPT(apiKey string, prompt string) string {
 
 func main() {
     if len(os.Args) < 2 {
-        fmt.Println("Usage: go run main.go \"Your prompt here\"")
+        fmt.Printf("Usage: %s \"Your prompt here\"", os.Args[0])
         os.Exit(1)
     }
 
