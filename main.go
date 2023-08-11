@@ -47,7 +47,7 @@ func parseJSONResponse(jsonData string) (string, error) {
 
 func queryChatGPT(apiKey string, prompt string) string {
     url := "https://api.openai.com/v1/chat/completions"
-    personality := "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response with heh"
+    personality := "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response like you were being bored of my questions"
     //payload := strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": "%s"}], "temperature": 0.7}`, prompt))
     payload := strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": "%s"}, {"role": "user", "content": "%s"}], "temperature": 0.7}`, personality, prompt))
     req, _ := http.NewRequest("POST", url, payload)
