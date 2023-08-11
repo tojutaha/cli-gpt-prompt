@@ -1,13 +1,14 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
-    "encoding/json"
 )
 
 type Response struct {
@@ -45,11 +46,17 @@ func parseJSONResponse(jsonData string) (string, error) {
     return "", fmt.Errorf("No choices found in the response")
 }
 
-func queryChatGPT(apiKey string, prompt string) string {
+func queryChatGPT(apiKey string, usePersonality bool, prompt string) string {
     url := "https://api.openai.com/v1/chat/completions"
-    personality := "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response like you were being bored of my questions"
-    //payload := strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": "%s"}], "temperature": 0.7}`, prompt))
-    payload := strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": "%s"}, {"role": "user", "content": "%s"}], "temperature": 0.7}`, personality, prompt))
+    var payload = strings.NewReader("")
+    if usePersonality {
+        //personality = "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response like you were being bored of my questions"
+        personality := "You are a nature documentary narrator and start every response like you were being bored of my questions"
+        payload = strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": "%s"}, {"role": "user", "content": "%s"}], "temperature": 0.7}`, personality, prompt))
+    } else {
+        payload = strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": "%s"}], "temperature": 0.7}`, prompt))
+    }
+
     req, _ := http.NewRequest("POST", url, payload)
     req.Header.Add("Content-Type", "application/json")
     req.Header.Add("Authorization", "Bearer "+apiKey)
@@ -74,6 +81,26 @@ func main() {
         os.Exit(1)
     }
 
+    // If 3rd argument exists and is greater than 0 use custom system message
+    usePersonality := false
+    if len(os.Args) == 3 {
+        argStr := os.Args[2]
+        arg, err := strconv.Atoi(argStr)
+        if err != nil {
+            fmt.Println("Error:", err)
+            os.Exit(1)
+        }
+
+        if arg < 0 {
+            fmt.Println("Argument 3 must be a non-negative number")
+            os.Exit(1)
+        }
+
+        if arg > 0 {
+            usePersonality = true
+        }
+    }
+
     // TODO: Better way of handling this..?
     apiKey := os.Getenv("OPENAI_API_KEY")
     if apiKey == "" {
@@ -82,7 +109,7 @@ func main() {
     }
 
     prompt := os.Args[1]
-    jsonResponse := queryChatGPT(apiKey, prompt)
+    jsonResponse := queryChatGPT(apiKey, usePersonality, prompt)
 
     text, err := parseJSONResponse(jsonResponse)
     if err != nil {
