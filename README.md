@@ -4,3 +4,4 @@ Windows batch file pipes the response to glow (required) https://github.com/char
 
 ![example](prompt.jpg)
 
+![example2](prompt2.jpg)
