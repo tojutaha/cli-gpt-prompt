@@ -82,6 +82,7 @@ func parseJSONResponse(jsonData string) (string, error) {
     // Assuming theres only one choice in the choices array
     if len(data.Choices) > 0 {
         content := data.Choices[0].Message.Content
+        // Dont allow any " characters, it will mess up the json format..
         strings.ReplaceAll(content, "\"", "")
         message := fmt.Sprintf(`{"role": "assistant", "content": "%s"}`, content)
         addToHistory(&messages, message)
