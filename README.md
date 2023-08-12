@@ -2,6 +2,7 @@ Simple go application that lets you do chatgpt prompts from command line.
 By default uses gpt-3.5-turbo model.
 
 Windows batch files pipes the response to glow (required). https://github.com/charmbracelet/glow
+
 gpt.bat runs main.go
 gptm.bat runs memory.go
 
