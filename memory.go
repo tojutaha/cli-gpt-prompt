@@ -9,12 +9,14 @@ import (
 	"os"
 	"strconv"
 	"strings"
+    "path/filepath"
 )
 
 var model = "gpt-3.5-turbo"
 //var personality = "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response like you were being bored of my questions"
 var personality = "You are a nature documentary narrator and start every response like you were being bored of my questions"
 var messages = []string{}
+var historyfilepath = ""
 
 type Response struct {
     ID       string `json:"id"`
@@ -40,7 +42,7 @@ func saveHistory(arr []string) {
     // Convert array to single string with each element separated by a new line
     data := strings.Join(arr, "\n")
 
-    err := ioutil.WriteFile("message_history", []byte(data), 0644)
+    err := ioutil.WriteFile(historyfilepath, []byte(data), 0644)
     if err != nil {
         fmt.Println("Error:", err)
         os.Exit(1)
@@ -48,7 +50,7 @@ func saveHistory(arr []string) {
 }
 
 func loadHistory() []string {
-    data, err := ioutil.ReadFile("message_history")
+    data, err := ioutil.ReadFile(historyfilepath)
     if err != nil {
         if !os.IsNotExist(err) {
             fmt.Println("Error:", err)
@@ -126,6 +128,15 @@ func main() {
         os.Exit(1)
     }
 
+    dir, err := os.Executable()
+    if err != nil {
+        fmt.Println("Error:", err)
+        os.Exit(1)
+    }
+
+    dir = filepath.Dir(dir)
+    historyfilepath = filepath.Join(dir, "message_history")
+
     // If 3rd argument exists and is greater than 0 use custom system message
     var useSystemMessage = 0
     if len(os.Args) == 3 {
@@ -147,11 +158,9 @@ func main() {
     }
 
     messages = loadHistory()
-    if messages == nil {
-        if useSystemMessage > 0 {
-            message := fmt.Sprintf(`{"role": "system", "content": "%s"}`, personality)
-            addToHistory(&messages, message)
-        }
+    if useSystemMessage > 0 {
+        message := fmt.Sprintf(`{"role": "system", "content": "%s"}`, personality)
+        addToHistory(&messages, message)
     }
 
     // TODO: Better way of handling this..?

@@ -1,2 +1,8 @@
 @echo off
-go run main.go "%~1" | glow
+
+if "%2" == "" (
+    gpt-executable.exe "%~1" | glow
+    exit /b
+)
+
+gpt-executable.exe "%~1" "%~2" | glow
