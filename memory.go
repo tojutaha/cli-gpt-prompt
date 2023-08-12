@@ -11,6 +11,9 @@ import (
 	"strings"
 )
 
+var model = "gpt-3.5-turbo"
+//var personality = "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response like you were being bored of my questions"
+var personality = "You are a nature documentary narrator and start every response like you were being bored of my questions"
 var messages = []string{}
 
 type Response struct {
@@ -98,7 +101,7 @@ func queryChatGPT(apiKey string, prompt string) string {
     message := fmt.Sprintf(`{"role": "user", "content": "%s"}`, prompt)
     addToHistory(&messages, message)
 
-    payload := strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": %s, "temperature": 0.7}`, messages))
+    payload := strings.NewReader(fmt.Sprintf(`{ "model": "%s", "messages": %s, "temperature": 0.7}`, model, messages))
     req, _ := http.NewRequest("POST", url, payload)
     req.Header.Add("Content-Type", "application/json")
     req.Header.Add("Authorization", "Bearer "+apiKey)
@@ -146,8 +149,6 @@ func main() {
     messages = loadHistory()
     if messages == nil {
         if useSystemMessage > 0 {
-            //personality = "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response like you were being bored of my questions"
-            personality := "You are a nature documentary narrator and start every response like you are bored of my questions"
             message := fmt.Sprintf(`{"role": "system", "content": "%s"}`, personality)
             addToHistory(&messages, message)
         }

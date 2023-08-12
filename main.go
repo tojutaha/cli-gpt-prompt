@@ -11,6 +11,10 @@ import (
 	"strings"
 )
 
+var model = "gpt-3.5-turbo"
+//var personality = "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response like you were being bored of my questions"
+var personality = "You are a nature documentary narrator and start every response like you were being bored of my questions"
+
 type Response struct {
     ID       string `json:"id"`
     Object   string `json:"object"`
@@ -50,11 +54,9 @@ func queryChatGPT(apiKey string, usePersonality bool, prompt string) string {
     url := "https://api.openai.com/v1/chat/completions"
     var payload = strings.NewReader("")
     if usePersonality {
-        //personality = "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response like you were being bored of my questions"
-        personality := "You are a nature documentary narrator and start every response like you were being bored of my questions"
-        payload = strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": [{"role": "system", "content": "%s"}, {"role": "user", "content": "%s"}], "temperature": 0.7}`, personality, prompt))
+        payload = strings.NewReader(fmt.Sprintf(`{ "model": "%s", "messages": [{"role": "system", "content": "%s"}, {"role": "user", "content": "%s"}], "temperature": 0.7}`, model, personality, prompt))
     } else {
-        payload = strings.NewReader(fmt.Sprintf(`{ "model": "gpt-3.5-turbo", "messages": [{"role": "user", "content": "%s"}], "temperature": 0.7}`, prompt))
+        payload = strings.NewReader(fmt.Sprintf(`{ "model": "%s", "messages": [{"role": "user", "content": "%s"}], "temperature": 0.7}`, model, prompt))
     }
 
     req, _ := http.NewRequest("POST", url, payload)
