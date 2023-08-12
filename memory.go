@@ -58,8 +58,8 @@ func loadHistory() []string {
 }
 
 func addToHistory(arr* []string, data string) {
-    // If theres more than one element in the array,
-    // add comma at the end of the string, but not to the last one
+    // If theres more than one element in the array, add comma at the end of the string, 
+    // so that its valid JSON format
     if len(*arr) > 0 {
         for i := 0; i < len(*arr); i++ {
             // only if there were no comma already
