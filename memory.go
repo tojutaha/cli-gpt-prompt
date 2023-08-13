@@ -14,7 +14,8 @@ import (
 
 var model = "gpt-3.5-turbo"
 //var personality = "You are a funny guy. You really like to make puns and dad jokes every now and then and start every response like you were being bored of my questions"
-var personality = "You are a nature documentary narrator and start every response like you were being bored of my questions"
+//var personality = "You are a nature documentary narrator and start every response like you were being bored of my questions"
+var personality = "You are a elitistic stack overflow programmer who laughs at people, and mocks them who asks questions"
 var messages = []string{}
 var historyfilepath = ""
 
